@@ -1,6 +1,6 @@
 {
   "name": "meshblu-connector-myo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Meshblu Connector ",
   "homepage": "https://github.com/octoblu/myo",
   "bugs": "https://github.com/octoblu/myo/issues",
@@ -28,7 +28,6 @@
   "dependencies": {
     "coffee-script": "^1.10.0",
     "debug": "^2.2.0",
-    "eventemitter2": "^1.0.0",
     "lodash": "^4.13.1",
     "meshblu-config": "^4.0.0",
     "meshblu-connector-runner": "^6.0.0",
