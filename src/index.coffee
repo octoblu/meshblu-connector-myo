@@ -5,8 +5,8 @@ Myo             = require('myo')
 
 class MyoConnector extends EventEmitter
   constructor: ->
-    isMyoConnected = false
-    DEFAULT_OPTIONS =
+    @isMyoConnected = false
+    @DEFAULT_OPTIONS =
       id: 0
       interval: 500
       accelerometer: enabled: false
@@ -116,7 +116,5 @@ class MyoConnector extends EventEmitter
 
     Myo.on 'battery_level', (val) ->
       throttledEmit 'batteryLevel': val
-
-
 
 module.exports = MyoConnector
