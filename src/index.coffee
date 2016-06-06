@@ -59,14 +59,12 @@ class MyoConnector extends EventEmitter
     debug 'creating myo with', myoId, Myo.defaults
     Myo.connect Myo.defaults.app_id
     return unless @isMyoConnected == false
-    console.log "dude"
     @isMyoConnected = true
     @myoEvents()
 
   myoEvents: =>
     Myo.on 'connected', (data) =>
       Myo.methods.unlock()
-      console.log Myo
       @_myo = data
       debug 'We are connected to Myo, ', data
       @throttledEmit 'event': 'connected'
