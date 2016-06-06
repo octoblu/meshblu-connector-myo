@@ -13,13 +13,17 @@ class MyoConnector extends EventEmitter
       imu: enabled: false
       gyroscope: enabled: false
       orientation: enabled: false
+
     debug 'Myo constructed'
+
+  isOnline: (callback) =>
+    callback null, running: true
 
   onMessage: (message) =>
     debug 'got message', message
     { payload } = message
     return unless payload?
-    if Myo.myos
+    return unless Myo.myos?
       if payload.command and payload.command.action
         action = payload.command.action
         if action == 'vibrate'
@@ -32,6 +36,12 @@ class MyoConnector extends EventEmitter
   onConfig: (device) =>
     { @options } = device
     @options = _.extend({}, @DEFAULT_OPTIONS, @options)
+    @throttledEmit = _.throttle(((payload) =>
+      debug 'throttled', payload
+      @emit 'message',
+        'devices': [ '*' ]
+        'payload': payload
+    ), @options.interval, 'leading': false)
     @setupMyo()
 
   start: (device) =>
@@ -48,51 +58,46 @@ class MyoConnector extends EventEmitter
       app_id: 'com.octoblu.myo'
     debug 'creating myo with', myoId, Myo.defaults
     Myo.connect Myo.defaults.app_id
-    if !@isMyoConnected
-      @isMyoConnected = true
-      @myoEvents()
+    return unless @isMyoConnected == false
+    console.log "dude"
+    @isMyoConnected = true
+    @myoEvents()
 
   myoEvents: =>
-    throttledEmit = _.throttle(((payload) ->
-      debug 'throttled', payload
-      @emit 'message',
-        'devices': [ '*' ]
-        'payload': payload
-    ), @options.interval, 'leading': false)
-
-    Myo.on 'connected', (data) ->
+    Myo.on 'connected', (data) =>
+      Myo.methods.unlock()
+      console.log Myo
       @_myo = data
       debug 'We are connected to Myo, ', data
-      @unlock()
-      throttledEmit 'event': 'connected'
+      @throttledEmit 'event': 'connected'
 
-    Myo.on 'disconnected', ->
+    Myo.on 'disconnected', =>
       debug 'We are disconnected from Myo'
-      throttledEmit 'event': 'disconnected'
+      @throttledEmit 'event': 'disconnected'
 
-    Myo.on 'arm_synced', ->
+    Myo.on 'arm_synced', =>
       debug 'Arm Synced'
-      throttledEmit 'event': 'arm_synced'
+      @throttledEmit 'event': 'arm_synced'
 
-    Myo.on 'arm_unsynced', ->
+    Myo.on 'arm_unsynced', =>
       debug 'Arm arm_unsynced'
-      throttledEmit 'event': 'arm_unsynced'
+      @throttledEmit 'event': 'arm_unsynced'
 
-    Myo.on 'locked', (data) ->
+    Myo.on 'locked', (data) =>
       debug 'Locked Myo'
-      throttledEmit 'event': 'locked'
+      @throttledEmit 'event': 'locked'
 
-    Myo.on 'unlocked', (data) ->
+    Myo.on 'unlocked', (data) =>
       debug 'Unlocked Myo'
-      throttledEmit 'event': 'unlocked'
+      @throttledEmit 'event': 'unlocked'
 
-    Myo.on 'accelerometer', (data) ->
-      throttledEmit 'accelerometer': data if @options.accelerometer.enabled
+    Myo.on 'accelerometer', (data) =>
+      @throttledEmit 'accelerometer': data if @options.accelerometer.enabled
 
-    Myo.on 'gyroscope', (data) ->
-      throttledEmit 'gyroscope': data if @options.gyroscope.enabled
+    Myo.on 'gyroscope', (data) =>
+      @throttledEmit 'gyroscope': data if @options.gyroscope.enabled
 
-    Myo.on 'orientation', (data) ->
+    Myo.on 'orientation', (data) =>
       data =
         offset:
           w: data.w
@@ -100,21 +105,21 @@ class MyoConnector extends EventEmitter
           y: data.y
           z: data.z
 
-      throttledEmit 'orientation': data if @options.orientation.enabled
+      @throttledEmit 'orientation': data if @options.orientation.enabled
 
-    Myo.on 'imu', (data) ->
-      throttledEmit 'imu': data if @options.imu.enabled
+    Myo.on 'imu', (data) =>
+      @throttledEmit 'imu': data if @options.imu.enabled
 
-    Myo.on 'pose_off', (poseNameOff) ->
-      @unlock()
+    Myo.on 'pose_off', (poseNameOff) =>
+      Myo.methods.unlock()
       poseName = poseNameOff.replace('_off', '')
       debug 'event', poseName
-      throttledEmit 'event': poseName
+      @throttledEmit 'event': poseName
 
-    Myo.on 'rssi', (val) ->
-      throttledEmit 'bluetoothStrength': val
+    Myo.on 'rssi', (val) =>
+      @throttledEmit 'bluetoothStrength': val
 
-    Myo.on 'battery_level', (val) ->
-      throttledEmit 'batteryLevel': val
+    Myo.on 'battery_level', (val) =>
+      @throttledEmit 'batteryLevel': val
 
 module.exports = MyoConnector

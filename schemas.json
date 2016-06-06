@@ -11,24 +11,26 @@
       }
     },
     "configure": {
-      "my-default-config": {
+      "default-config": {
         "type": "object",
         "properties": {
           "options": {
             "type": "object",
             "properties": {
               "id": {
+                "title": "ID",
                 "type": "number",
                 "default": 0,
                 "required": true
               },
               "interval": {
-                "title": "interval in ms",
+                "title": "Interval in ms",
                 "type": "number",
                 "required": true,
                 "default": 500
               },
               "accelerometer": {
+                "title": "Accelerometer",
                 "type": "object",
                 "properties": {
                   "enabled": {
@@ -39,6 +41,7 @@
                 }
               },
               "imu": {
+                "title": "IMU",
                 "type": "object",
                 "properties": {
                   "enabled": {
@@ -49,6 +52,7 @@
                 }
               },
               "gyroscope": {
+                "title": "Gyoscope",
                 "type": "object",
                 "properties": {
                   "enabled": {
@@ -59,6 +63,7 @@
                 }
               },
               "orientation": {
+                "title": "Orientation",
                 "type": "object",
                 "properties": {
                   "enabled": {
@@ -74,13 +79,14 @@
       }
     },
     "message": {
-      "example-message-01": {
+      "myo-action": {
         "type": "object",
         "properties": {
           "command": {
             "type": "object",
             "properties": {
               "action": {
+                "title": "Action",
                 "type": "string",
                 "enum": [
                   "vibrate",
@@ -90,6 +96,7 @@
                 "default": "vibrate"
               },
               "vibrationLength": {
+                "title": "Vibration Length",
                 "type": "string",
                 "enum": [
                   "short",
