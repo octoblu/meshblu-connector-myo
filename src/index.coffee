@@ -93,11 +93,12 @@ class MyoConnector extends EventEmitter
       throttledEmit 'gyroscope': data if @options.gyroscope.enabled
 
     Myo.on 'orientation', (data) ->
-      data = offset:
-        w: data.w
-        x: data.x
-        y: data.y
-        z: data.z
+      data =
+        offset:
+          w: data.w
+          x: data.x
+          y: data.y
+          z: data.z
 
       throttledEmit 'orientation': data if @options.orientation.enabled
 
