@@ -15,10 +15,58 @@
         "type": "object",
         "properties": {
           "options": {
-            "type" : "object",
-            "properties" : {
-              "example" : {
-                "type" : "string"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "default": 0,
+                "required": true
+              },
+              "interval": {
+                "title": "interval in ms",
+                "type": "number",
+                "required": true,
+                "default": 500
+              },
+              "accelerometer": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "required": true,
+                    "default": false
+                  }
+                }
+              },
+              "imu": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "required": true,
+                    "default": false
+                  }
+                }
+              },
+              "gyroscope": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "required": true,
+                    "default": false
+                  }
+                }
+              },
+              "orientation": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "required": true,
+                    "default": false
+                  }
+                }
               }
             }
           }
@@ -29,30 +77,30 @@
       "example-message-01": {
         "type": "object",
         "properties": {
-          "example-opt": {
-            "type": "string"
-          },
-          "another-example-opt":{
-            "type": "string"
+          "command": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "vibrate",
+                  "requestBlueToothStrength",
+                  "zeroOrientation"
+                ],
+                "default": "vibrate"
+              },
+              "vibrationLength": {
+                "type": "string",
+                "enum": [
+                  "short",
+                  "medium",
+                  "long"
+                ],
+                "default": "short"
+              }
+            }
           }
-        },
-        "x-form-schema": {
-          "angular": "message.example-01.angular"
-        },
-        "x-group-name": "Message Example Group",
-        "required": ["example-opt", "another-example-opt"]
-      },
-      "example-message-02": {
-        "type": "object",
-        "properties": {
-          "some-opt": {
-            "type": "string"
-          },
-          "another-some-opt":{
-            "type": "string"
-          }
-        },
-        "required": ["some-opt", "another-some-opt"]
+        }
       }
     }
   }
