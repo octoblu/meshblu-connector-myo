@@ -3,7 +3,7 @@ debug           = require('debug')('meshblu-connector-myo:index')
 _               = require('lodash')
 Myo             = require('myo')
 
-class Myo extends EventEmitter
+class MyoConnector extends EventEmitter
   constructor: ->
     isMyoConnected = false
     DEFAULT_OPTIONS =
@@ -18,6 +18,7 @@ class Myo extends EventEmitter
   onMessage: (message) =>
     debug 'got message', message
     { payload } = message
+    return unless payload?
     if Myo.myos
       if payload.command and payload.command.action
         action = payload.command.action
@@ -30,16 +31,16 @@ class Myo extends EventEmitter
 
   onConfig: (device) =>
     { @options } = device
-    @options = _.extend({}, DEFAULT_OPTIONS, options)
+    @options = _.extend({}, @DEFAULT_OPTIONS, @options)
     @setupMyo()
 
   start: (device) =>
     { @uuid } = device
     debug 'started', @uuid
+    @onConfig device
 
   setupMyo: =>
     debug 'setting up myo'
-    self = this
     myoId = @options.id or 0
     Myo.defaults =
       api_version: 3
@@ -47,8 +48,8 @@ class Myo extends EventEmitter
       app_id: 'com.octoblu.myo'
     debug 'creating myo with', myoId, Myo.defaults
     Myo.connect Myo.defaults.app_id
-    if !isMyoConnected
-      isMyoConnected = true
+    if !@isMyoConnected
+      @isMyoConnected = true
       @myoEvents()
 
   myoEvents: =>
@@ -117,4 +118,4 @@ class Myo extends EventEmitter
 
 
 
-module.exports = Myo
+module.exports = MyoConnector
