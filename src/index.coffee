@@ -1,48 +1,57 @@
 {EventEmitter}  = require 'events'
-debug           = require('debug')('meshblu-connector-myo:index')
 _               = require('lodash')
 Myo             = require('myo')
+debug           = require('debug')('meshblu-connector-myo:index')
 
 class MyoConnector extends EventEmitter
   constructor: ->
-    @isMyoConnected = false
-    @DEFAULT_OPTIONS =
-      id: 0
-      interval: 500
-      accelerometer: enabled: false
-      imu: enabled: false
-      gyroscope: enabled: false
-      orientation: enabled: false
-
-    debug 'Myo constructed'
+    @connecting = false
+    @DEFAULT_EVENTS =
+      accelerometer:
+        enabled: false
+      imu:
+        enabled: false
+      gyroscope:
+        enabled: false
+      orientation:
+        enabled: false
 
   isOnline: (callback) =>
-    callback null, running: true
+    callback null, running: !!@_myo
 
-  onMessage: (message) =>
+  onMessage: (message={}) =>
     debug 'got message', message
     { payload } = message
-    return unless payload?
-    return unless Myo.myos?
-      if payload.command and payload.command.action
-        action = payload.command.action
-        if action == 'vibrate'
-          Myo.vibrate payload.command.vibrationLength
-        else if action == 'requestBluetoothStrength'
-          Myo.requestBluetoothStrength()
-        else if action == 'zeroOrientation'
-          Myo.zeroOrientation()
+    return console.error 'no payload' unless payload?
+    return console.error 'myo not connected' unless @isMyoConnected
+    return console.error 'no myos' unless Myo.myos?
+    { command, action } = payload
+    return debug 'invalid command' unless command?
+    return debug 'invalid action' unless Myo[action]?
+    options = null
+    options = command.vibrationLength if action == 'vibrate'
+    Myo[action] options
 
-  onConfig: (device) =>
-    { @options } = device
-    @options = _.extend({}, @DEFAULT_OPTIONS, @options)
-    @throttledEmit = _.throttle(((payload) =>
-      debug 'throttled', payload
-      @emit 'message',
-        'devices': [ '*' ]
-        'payload': payload
-    ), @options.interval, 'leading': false)
+  onConfig: (device={}) =>
+    { options, events } = device
+    { interval } = options ? {}
+    @events = _.assign({}, @DEFAULT_EVENTS, events)
+    @throttledEmit = _.throttle @emitEvent, interval ? 500, { 'leading': false }
     @setupMyo()
+
+  emitError: (error) =>
+    debug 'emit event', payload
+    @emit 'message',
+      'devices': [ '*' ]
+      'topic': 'error',
+      'payload': { error }
+
+  emitEvent: (payload={}) =>
+    debug 'emit event', payload
+    @emit 'message',
+      'devices': [ '*' ]
+      'topic': 'event',
+      'payload': payload
 
   start: (device) =>
     { @uuid } = device
@@ -50,23 +59,34 @@ class MyoConnector extends EventEmitter
     @onConfig device
 
   setupMyo: =>
+    return if @connecting
+    @connecting = true
     debug 'setting up myo'
-    myoId = @options.id or 0
     Myo.defaults =
       api_version: 3
       socket_url: 'ws://127.0.0.1:10138/myo/'
       app_id: 'com.octoblu.myo'
-    debug 'creating myo with', myoId, Myo.defaults
-    Myo.connect Myo.defaults.app_id
-    return unless @isMyoConnected == false
-    @isMyoConnected = true
+    debug 'connecting myo', Myo.defaults
+    try
+      Myo.connect Myo.defaults.app_id
+    catch error
+      @connecting = false
+      console.error error
+      @emitError error
+      return
+    return if @_myo
     @myoEvents()
+
+  logEvent: (eventName, data) =>
+    return unless @events[eventName].enabled
+    @throttledEmit eventName: data
 
   myoEvents: =>
     Myo.on 'connected', (data) =>
-      Myo.methods.unlock()
+      @connecting = false
       @_myo = data
-      debug 'We are connected to Myo, ', data
+      Myo.methods.unlock()
+      debug 'We are connected to Myo, ', @_myo
       @throttledEmit 'event': 'connected'
 
     Myo.on 'disconnected', =>
@@ -90,10 +110,10 @@ class MyoConnector extends EventEmitter
       @throttledEmit 'event': 'unlocked'
 
     Myo.on 'accelerometer', (data) =>
-      @throttledEmit 'accelerometer': data if @options.accelerometer.enabled
+      @logEvent 'accelerometer', data
 
     Myo.on 'gyroscope', (data) =>
-      @throttledEmit 'gyroscope': data if @options.gyroscope.enabled
+      @logEvent 'gyroscope', data
 
     Myo.on 'orientation', (data) =>
       data =
@@ -103,10 +123,10 @@ class MyoConnector extends EventEmitter
           y: data.y
           z: data.z
 
-      @throttledEmit 'orientation': data if @options.orientation.enabled
+      @logEvent 'orientation', data
 
     Myo.on 'imu', (data) =>
-      @throttledEmit 'imu': data if @options.imu.enabled
+      @logEvent 'imu', data
 
     Myo.on 'pose_off', (poseNameOff) =>
       Myo.methods.unlock()

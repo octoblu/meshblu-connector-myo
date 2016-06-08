@@ -1,44 +1,37 @@
 {
   "schemas": {
     "version": "1.0.0",
-    "form": {
-      "message": {
-        "example-01": {
-          "angular": {
-            "schema": ["*"]
-          }
-        }
-      }
-    },
     "configure": {
       "default-config": {
+        "title": "Default Config",
         "type": "object",
         "properties": {
           "options": {
+            "title": "Options",
             "type": "object",
             "properties": {
-              "id": {
-                "title": "ID",
-                "type": "number",
-                "default": 0,
-                "required": true
-              },
               "interval": {
                 "title": "Interval in ms",
                 "type": "number",
-                "required": true,
                 "default": 500
-              },
+              }
+            },
+            "required": ["interval"]
+          },
+          "events": {
+            "title": "Configure Events",
+            "type": "object",
+            "properties": {
               "accelerometer": {
                 "title": "Accelerometer",
                 "type": "object",
                 "properties": {
                   "enabled": {
                     "type": "boolean",
-                    "required": true,
                     "default": false
                   }
-                }
+                },
+                "required": ["enabled"]
               },
               "imu": {
                 "title": "IMU",
@@ -46,10 +39,10 @@
                 "properties": {
                   "enabled": {
                     "type": "boolean",
-                    "required": true,
                     "default": false
                   }
-                }
+                },
+                "required": ["enabled"]
               },
               "gyroscope": {
                 "title": "Gyoscope",
@@ -57,10 +50,10 @@
                 "properties": {
                   "enabled": {
                     "type": "boolean",
-                    "required": true,
                     "default": false
                   }
-                }
+                },
+                "required": ["enabled"]
               },
               "orientation": {
                 "title": "Orientation",
@@ -68,14 +61,15 @@
                 "properties": {
                   "enabled": {
                     "type": "boolean",
-                    "required": true,
                     "default": false
                   }
-                }
+                },
+                "required": ["enabled"]
               }
             }
           }
-        }
+        },
+        "required": ["options"]
       }
     },
     "message": {
