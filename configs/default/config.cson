@@ -1,0 +1,60 @@
+title: "Default Configuration"
+type: "object"
+properties:
+  options:
+    title: "Options"
+    type: "object"
+    properties:
+      interval:
+        title: "Interval in ms"
+        type: "number"
+        default: 500
+    required: [
+      "interval"
+    ]
+  events:
+    title: "Configure Events"
+    type: "object"
+    properties:
+      accelerometer:
+        title: "Accelerometer"
+        description: "Stream accelerometer events"
+        type: "boolean"
+        default: false
+      emg:
+        title: "EMG"
+        description: "Stream EMG events"
+        type: "object"
+        default: false
+      imu:
+        title: "IMU"
+        description: "Stream IMU events"
+        type: "object"
+        default: false
+      gyroscope:
+        title: "Gyroscope"
+        description: "Stream gryoscope events"
+        type: "object"
+        default: false
+      orientation:
+        title: "Orientation"
+        description: "Stream orientation events"
+        type: "object"
+        default: false
+      pose:
+        title: "Pose"
+        description: "Stream pose events"
+        type: "object"
+        default: true
+    required: [
+      "accelerometer"
+      "emg"
+      "imu"
+      "gyroscope"
+      "orientation"
+      "pose"
+    ]
+required: [
+  "options"
+  "events"
+]

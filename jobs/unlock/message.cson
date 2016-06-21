@@ -1,0 +1,14 @@
+title: 'Unlock'
+type: 'object'
+properties:
+  data:
+    type: 'object'
+    properties:
+      timed:
+        title: "Timed Unlock"
+        description: "If true, will unlock Myo for ~2 seconds"
+        type: 'boolean'
+        default: false
+    required: [
+      'timed'
+    ]

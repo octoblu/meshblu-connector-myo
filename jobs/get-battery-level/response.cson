@@ -1,0 +1,11 @@
+title: 'GetBatteryLevel'
+type: 'object'
+properties:
+  data:
+    type: 'object'
+    properties:
+      batteryLevel:
+        type: 'number'
+    required: [
+      'batteryLevel'
+    ]

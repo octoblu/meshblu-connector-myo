@@ -1,0 +1,8 @@
+angular: [
+  { key: "options.interval" }
+  { key: "events.accelerometer" }
+  { key: "events.emg" }
+  { key: "events.imu" }
+  { key: "events.gyroscope" }
+  { key: "events.orientation" }
+]

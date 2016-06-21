@@ -1,0 +1,11 @@
+title: 'GetBluetoothStrength'
+type: 'object'
+properties:
+  data:
+    type: 'object'
+    properties:
+      bluetoothStrength:
+        type: 'number'
+    required: [
+      'bluetoothStrength'
+    ]

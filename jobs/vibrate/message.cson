@@ -1,0 +1,17 @@
+title: 'Vibrate'
+type: 'object'
+properties:
+  data:
+    type: 'object'
+    properties:
+      intensity:
+        title: "Intensity"
+        enum: [
+          'short',
+          'medium',
+          'long'
+        ],
+        default: 'medium'
+    required: [
+      'intensity'
+    ]
