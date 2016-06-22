@@ -5,6 +5,7 @@ describe 'Connector', ->
     @sut = new Connector
     {@myo} = @sut
     @myo.connect = sinon.stub().yields null
+    @myo.isOnline = sinon.stub().yields null, running: true
     @sut.start options: interval: 750, done
 
   afterEach (done) ->
@@ -41,7 +42,7 @@ describe 'Connector', ->
         imu: false
         emg: true
         pose: true
-        
+
       expect(@myo.connect).to.have.been.calledWith options
 
   describe '->vibrate', ->

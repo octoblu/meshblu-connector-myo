@@ -30,12 +30,12 @@
   "dependencies": {
     "coffee-script": "^1.10.0",
     "debug": "^2.2.0",
+    "fs-cson": "^0.3.2",
     "lodash": "^4.13.1",
     "meshblu-config": "^4.0.0",
     "meshblu-connector-runner": "^8.0.0",
-    "myo": "^2.1.1",
-    "fs-cson": "^0.3.2",
-    "meshblu-connector-schema-generator": "^2.0.0"
+    "meshblu-connector-schema-generator": "^2.0.0",
+    "myo": "^2.1.1"
   },
   "meshbluConnector": {
     "githubSlug": "octoblu/meshblu-connector-myo",

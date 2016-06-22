@@ -7,10 +7,10 @@ class Connector extends EventEmitter
     @myo = new MyoManager
 
   isOnline: (callback) =>
-    callback null, running: true
+    @myo.isOnline (error, {running}) =>
+      callback error, {running}
 
   close: (callback) =>
-    debug 'on close'
     callback()
 
   getBatteryLevel: (callback) =>
@@ -24,13 +24,11 @@ class Connector extends EventEmitter
 
   onConfig: (device={}, callback=->) =>
     { @options, events } = device
-    debug 'on config', @options
     { interval } = @options ? {}
     { accelerometer, emg, imu, gyroscope, orientation, pose } = events ? {}
     @myo.connect { interval, accelerometer, emg, imu, gyroscope, orientation, pose }, callback
 
   start: (device, callback) =>
-    debug 'started'
     @onConfig device, callback
 
   vibrate: ({intensity}, callback) =>
