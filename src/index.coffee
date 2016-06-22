@@ -5,6 +5,7 @@ MyoManager      = require './myo-manager'
 class Connector extends EventEmitter
   constructor: ->
     @myo = new MyoManager
+    @myo.on 'event', @_onEvent
 
   isOnline: (callback) =>
     @myo.isOnline (error, {running}) =>
@@ -39,5 +40,8 @@ class Connector extends EventEmitter
 
   zeroOrientation: (callback) =>
     @myo.zeroOrientation callback
+
+  _onEvent: (data) =>
+    @emit 'message', {devices: ['*'], data}
 
 module.exports = Connector

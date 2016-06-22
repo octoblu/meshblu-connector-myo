@@ -24,27 +24,27 @@ properties:
       emg:
         title: "EMG"
         description: "Stream EMG events"
-        type: "object"
+        type: "boolean"
         default: false
       imu:
         title: "IMU"
         description: "Stream IMU events"
-        type: "object"
+        type: "boolean"
         default: false
       gyroscope:
         title: "Gyroscope"
         description: "Stream gryoscope events"
-        type: "object"
+        type: "boolean"
         default: false
       orientation:
         title: "Orientation"
         description: "Stream orientation events"
-        type: "object"
+        type: "boolean"
         default: false
       pose:
         title: "Pose"
         description: "Stream pose events"
-        type: "object"
+        type: "boolean"
         default: true
     required: [
       "accelerometer"

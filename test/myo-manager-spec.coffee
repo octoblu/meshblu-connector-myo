@@ -4,18 +4,8 @@ describe 'MyoManager', ->
   beforeEach (done) ->
     @sut = new MyoManager
     {@Myo} = @sut
-    @myo =
-      streamEMG: sinon.stub()
-      vibrate: sinon.stub()
-      zeroOrientation: sinon.stub()
-      unlock: sinon.stub()
-      lock: sinon.stub()
-      requestBatteryLevel: =>
-        @Myo.trigger 'battery_level', 2
-      requestBluetoothStrength: =>
-        @Myo.trigger 'rssi', 2
     @Myo.connect = =>
-      @Myo.trigger 'connected', @myo
+      @Myo.trigger 'connected'
     @Myo.disconnect = =>
       @Myo.trigger 'disconnected'
 
@@ -29,11 +19,20 @@ describe 'MyoManager', ->
       interval: 500
     @sut.connect options, done
 
+  beforeEach ->
+    {@myo} = @sut
+    @myo.streamEMG = sinon.stub()
+    @myo.vibrate = sinon.stub()
+    @myo.zeroOrientation=  sinon.stub()
+    @myo.unlock = sinon.stub()
+    @myo.lock = sinon.stub()
+    @myo.requestBatteryLevel = =>
+      @Myo.trigger 'battery_level', 2
+    @myo.requestBluetoothStrength = =>
+      @Myo.trigger 'rssi', 2
+
   afterEach (done) ->
     @sut.close done
-
-  it 'should call streamEMG', ->
-    expect(@myo.streamEMG).to.have.been.calledWith true
 
   describe '->on arm_synced', ->
     beforeEach (done) ->

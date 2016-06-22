@@ -6,6 +6,7 @@ properties:
     properties:
       intensity:
         title: "Intensity"
+        type: "string"
         enum: [
           'short',
           'medium',

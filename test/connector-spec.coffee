@@ -4,6 +4,7 @@ describe 'Connector', ->
   beforeEach (done) ->
     @sut = new Connector
     {@myo} = @sut
+    @sut.emit = sinon.stub()
     @myo.connect = sinon.stub().yields null
     @myo.isOnline = sinon.stub().yields null, running: true
     @sut.start options: interval: 750, done
@@ -100,3 +101,13 @@ describe 'Connector', ->
 
     it 'should yield batteryLevel', ->
       expect(@batteryLevel).to.equal 55
+
+  describe '->_onEvent', ->
+    beforeEach (done) ->
+      @myo.once 'event', => done()
+      @myo.emit 'event', event: 'foo'
+
+    it 'should emit message', ->
+      data =
+        event: 'foo'
+      expect(@sut.emit).to.have.been.calledWith 'message', {devices: ['*'], data}

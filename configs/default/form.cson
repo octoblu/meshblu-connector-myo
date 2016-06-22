@@ -5,4 +5,5 @@ angular: [
   { key: "events.imu" }
   { key: "events.gyroscope" }
   { key: "events.orientation" }
+  { key: "events.pose" }
 ]
