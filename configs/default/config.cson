@@ -46,14 +46,6 @@ properties:
         description: "Stream pose events"
         type: "boolean"
         default: true
-    required: [
-      "accelerometer"
-      "emg"
-      "imu"
-      "gyroscope"
-      "orientation"
-      "pose"
-    ]
 required: [
   "options"
   "events"
